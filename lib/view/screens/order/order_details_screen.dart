@@ -194,453 +194,139 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                   ]),
                 ),
                 Divider(height: Dimensions.PADDING_SIZE_LARGE),
-                CardWidget(
-                                      showCard: _parcel,
-                                      child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                                _parcel
-                                                    ? 'parcel_category'.tr
-                                                    : Get.find<SplashController>()
-                                                            .getModule(_order
-                                                                .moduleType)
-                                                            .showRestaurantText
-                                                        ? 'restaurant_details'
-                                                            .tr
-                                                        : 'store_details'.tr,
-                                                style: robotoRegular),
-                                            SizedBox(
-                                                height: Dimensions
-                                                    .PADDING_SIZE_EXTRA_SMALL),
-                                            (_parcel &&
-                                                    _order.parcelCategory ==
-                                                        null)
-                                                ? Text(
-                                                    'no_parcel_category_data_found'
-                                                        .tr,
-                                                    style: robotoMedium)
-                                                : (!_parcel &&
-                                                        _order.store == null)
-                                                    ? Center(
-                                                        child: Padding(
-                                                        padding: const EdgeInsets
-                                                                .symmetric(
-                                                            vertical: Dimensions
-                                                                .PADDING_SIZE_SMALL),
-                                                        child: Text(
-                                                            'no_restaurant_data_found'
-                                                                .tr,
-                                                            maxLines: 1,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                            style: robotoRegular
-                                                                .copyWith(
-                                                                    fontSize:
-                                                                        Dimensions
-                                                                            .fontSizeSmall)),
-                                                      ))
-                                                    : Row(children: [
-                                                        ClipOval(
-                                                            child: CustomImage(
-                                                          image: _parcel
-                                                              ? '${Get.find<SplashController>().configModel.baseUrls.parcelCategoryImageUrl}/${_order.parcelCategory.image}'
-                                                              : '${Get.find<SplashController>().configModel.baseUrls.storeImageUrl}/${_order.store.logo}',
-                                                          height: 35,
-                                                          width: 35,
-                                                          fit: BoxFit.cover,
-                                                        )),
-                                                        SizedBox(
-                                                            width: Dimensions
-                                                                .PADDING_SIZE_SMALL),
+                SizedBox(height: Dimensions.PADDING_SIZE_SMALL),
 
-                                                        Expanded(
-                                                            child: Column(
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                              Text(
-                                                                _parcel
-                                                                    ? _order
-                                                                        .parcelCategory
-                                                                        .name
-                                                                    : _order
-                                                                        .store
-                                                                        .name,
-                                                                maxLines: 1,
-                                                                overflow:
-                                                                    TextOverflow
-                                                                        .ellipsis,
-                                                                style: robotoRegular
-                                                                    .copyWith(
-                                                                        fontSize:
-                                                                            Dimensions.fontSizeSmall),
-                                                              ),
-                                                              Text(
-                                                                _parcel
-                                                                    ? _order
-                                                                        .parcelCategory
-                                                                        .description
-                                                                    : _order
-                                                                        .store
-                                                                        .address,
-                                                                maxLines: 1,
-                                                                overflow:
-                                                                    TextOverflow
-                                                                        .ellipsis,
-                                                                style: robotoRegular.copyWith(
-                                                                    fontSize:
-                                                                        Dimensions
-                                                                            .fontSizeSmall,
-                                                                    color: Theme.of(
-                                                                            context)
-                                                                        .disabledColor),
-                                                              ),
-                                                            ])),
+                _parcel ? CardWidget(child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+                  DetailsWidget(title: 'sender_details'.tr, address: _order.deliveryAddress),
+                  SizedBox(height: Dimensions.PADDING_SIZE_LARGE),
+                  DetailsWidget(title: 'receiver_details'.tr, address: _order.receiverDetails),
+                ])) : ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: orderController.orderDetails.length,
+                  padding: EdgeInsets.zero,
+                  itemBuilder: (context, index) {
+                    return OrderItemWidget(order: _order, orderDetails: orderController.orderDetails[index]);
+                  },
+                ),
+                SizedBox(height: _parcel ? Dimensions.PADDING_SIZE_LARGE : 0),
 
-                                                        (!_parcel &&
-                                                                _order.orderType ==
-                                                                    'take_away' &&
-                                                                (_order
-                                                                            .orderStatus ==
-                                                                        'pending' ||
-                                                                    _order.orderStatus ==
-                                                                        'accepted' ||
-                                                                    _order.orderStatus ==
-                                                                        'confirmed' ||
-                                                                    _order.orderStatus ==
-                                                                        'processing' ||
-                                                                    _order.orderStatus ==
-                                                                        'handover' ||
-                                                                    _order.orderStatus ==
-                                                                        'picked_up'))
-                                                            ? TextButton.icon(
-                                                                onPressed:
-                                                                    () async {
-                                                                  if (!_parcel) {
-                                                                    String url =
-                                                                        'https://www.google.com/maps/dir/?api=1&destination=${_order.store.latitude}'
-                                                                        ',${_order.store.longitude}&mode=d';
-                                                                    if (await canLaunchUrlString(
-                                                                        url)) {
-                                                                      await launchUrlString(
-                                                                          url);
-                                                                    } else {
-                                                                      showCustomSnackBar(
-                                                                          'unable_to_launch_google_map'
-                                                                              .tr);
-                                                                    }
-                                                                  }
-                                                                },
-                                                                icon: Icon(Icons
-                                                                    .directions),
-                                                                label: Text(
-                                                                    'direction'
-                                                                        .tr),
-                                                              )
-                                                            : SizedBox(),
+                Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  (Get.find<SplashController>().getModule(_order.moduleType).orderAttachment && _order.orderAttachment != null
+                  && _order.orderAttachment.isNotEmpty) ? Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Text('prescription'.tr, style: robotoRegular),
+                    SizedBox(height: Dimensions.PADDING_SIZE_SMALL),
+                    InkWell(
+                      onTap: () => openDialog(context, '${Get.find<SplashController>().configModel.baseUrls.orderAttachmentUrl}/${_order.orderAttachment}'),
+                      child: Center(child: ClipRRect(
+                        borderRadius: BorderRadius.circular(Dimensions.RADIUS_SMALL),
+                        child: CustomImage(
+                          image: '${Get.find<SplashController>().configModel.baseUrls.orderAttachmentUrl}/${_order.orderAttachment}',
+                          width: 100, height: 100,
+                        ),
+                      )),
+                    ),
+                    SizedBox(height: Dimensions.PADDING_SIZE_LARGE),
+                  ]) : SizedBox(),
+                  SizedBox(width: (Get.find<SplashController>().getModule(_order.moduleType).orderAttachment
+                      && _order.orderAttachment != null && _order.orderAttachment.isNotEmpty) ? Dimensions.PADDING_SIZE_SMALL : 0),
 
-                                                        (!_parcel &&
-                                                                _order.orderStatus !=
-                                                                    'delivered' &&
-                                                                _order.orderStatus !=
-                                                                    'failed' &&
-                                                                _order.orderStatus !=
-                                                                    'canceled' &&
-                                                                _order.orderStatus !=
-                                                                    'refunded')
-                                                            ? TextButton.icon(
-                                                                onPressed:
-                                                                    () async {
-                                                                  await Get.toNamed(
-                                                                      RouteHelper
-                                                                          .getChatRoute(
-                                                                    notificationBody: NotificationBody(
-                                                                        orderId:
-                                                                            _order
-                                                                                .id,
-                                                                        restaurantId: _order
-                                                                            .store
-                                                                            .vendorId),
-                                                                    user: User(
-                                                                        id: _order
-                                                                            .store
-                                                                            .vendorId,
-                                                                        fName: _order
-                                                                            .store
-                                                                            .name,
-                                                                        lName:
-                                                                            '',
-                                                                        image: _order
-                                                                            .store
-                                                                            .logo),
-                                                                  ));
-                                                                },
-                                                                icon: Icon(
-                                                                    Icons
-                                                                        .chat_bubble_outline,
-                                                                    color: Theme.of(
-                                                                            context)
-                                                                        .primaryColor,
-                                                                    size: 20),
-                                                                label: Text(
-                                                                  'chat'.tr,
-                                                                  style: robotoRegular.copyWith(
-                                                                      fontSize:
-                                                                          Dimensions
-                                                                              .fontSizeSmall,
-                                                                      color: Theme.of(
-                                                                              context)
-                                                                          .primaryColor),
-                                                                ),
-                                                              )
-                                                            : SizedBox(),
+                  (_order.orderNote  != null && _order.orderNote.isNotEmpty) ? Expanded(
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Text('additional_note'.tr, style: robotoRegular),
+                      SizedBox(height: Dimensions.PADDING_SIZE_SMALL),
+                      Container(
+                        width: Dimensions.WEB_MAX_WIDTH,
+                        padding: EdgeInsets.all(Dimensions.PADDING_SIZE_SMALL),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(Dimensions.RADIUS_SMALL),
+                          border: Border.all(width: 1, color: Theme.of(context).disabledColor),
+                        ),
+                        child: Text(
+                          _order.orderNote,
+                          style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).disabledColor),
+                        ),
+                      ),
+                      SizedBox(height: Dimensions.PADDING_SIZE_LARGE),
+                    ]),
+                  ) : SizedBox(),
+                ]),
 
-                                                        // !_parcel ? TextButton.icon(
-                                                        //   onPressed: () async {
-                                                        //     _timer?.cancel();
-                                                        //     await Get.toNamed(RouteHelper.getChatRoute(orderModel: widget.orderModel, isStore: true));
-                                                        //     _startApiCall();
-                                                        //   },
-                                                        //   icon: Icon(Icons.message, color: Theme.of(context).primaryColor, size: 20),
-                                                        //   label: Text(
-                                                        //     'message'.tr,
-                                                        //     style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).primaryColor),
-                                                        //   ),
-                                                        // ) : SizedBox(),
+                CardWidget(showCard: _parcel, child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text(_parcel ? 'parcel_category'.tr : Get.find<SplashController>().getModule(_order.moduleType).showRestaurantText
+                      ? 'restaurant_details'.tr : 'store_details'.tr, style: robotoRegular),
+                  SizedBox(height: Dimensions.PADDING_SIZE_EXTRA_SMALL),
+                  (_parcel && _order.parcelCategory == null) ? Text(
+                    'no_parcel_category_data_found'.tr, style: robotoMedium
+                  ) : (!_parcel && _order.store == null) ? Center(child: Padding(padding: const EdgeInsets.symmetric(vertical: Dimensions.PADDING_SIZE_SMALL),
+                    child: Text('no_restaurant_data_found'.tr, maxLines: 1, overflow: TextOverflow.ellipsis,
+                        style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall)),
+                  )) : Row(children: [
 
-                                                        (Get.find<SplashController>()
-                                                                    .configModel
-                                                                    .refundActiveStatus &&
-                                                                _order.orderStatus ==
-                                                                    'delivered' &&
-                                                                !_parcel &&
-                                                                (_parcel ||
-                                                                    orderController
-                                                                            .orderDetails[0]
-                                                                            .itemCampaignId ==
-                                                                        null))
-                                                            ? InkWell(
-                                                                onTap: () => Get
-                                                                    .toNamed(RouteHelper
-                                                                        .getRefundRequestRoute(_order
-                                                                            .id
-                                                                            .toString())),
-                                                                child:
-                                                                    Container(
-                                                                  decoration:
-                                                                      BoxDecoration(
-                                                                    border: Border.all(
-                                                                        color: Theme.of(context)
-                                                                            .primaryColor,
-                                                                        width:
-                                                                            1),
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            Dimensions.RADIUS_SMALL),
-                                                                  ),
-                                                                  padding: EdgeInsets.symmetric(
-                                                                      horizontal:
-                                                                          Dimensions
-                                                                              .PADDING_SIZE_EXTRA_SMALL,
-                                                                      vertical:
-                                                                          Dimensions
-                                                                              .PADDING_SIZE_SMALL),
-                                                                  child: Text(
-                                                                      'refund_this_order'
-                                                                          .tr,
-                                                                      style: robotoMedium.copyWith(
-                                                                          fontSize: Dimensions
-                                                                              .fontSizeSmall,
-                                                                          color:
-                                                                              Theme.of(context).primaryColor)),
-                                                                ),
-                                                              )
-                                                            : SizedBox(),
-                                                      ]),
-                                          ])),
+                    ClipOval(child: CustomImage(
+                      image: _parcel ? '${Get.find<SplashController>().configModel.baseUrls.parcelCategoryImageUrl}/${_order.parcelCategory.image}'
+                          : '${Get.find<SplashController>().configModel.baseUrls.storeImageUrl}/${_order.store.logo}',
+                      height: 35, width: 35, fit: BoxFit.cover,
+                    )),
+                    SizedBox(width: Dimensions.PADDING_SIZE_SMALL),
 
-                                  (_order.orderStatus ==
-                                              'refund_request_canceled' &&
-                                          _order.refundCancellationNote != null)
-                                      ? Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                              Divider(
-                                                  height: Dimensions
-                                                      .PADDING_SIZE_LARGE),
-                                              Text(
-                                                  'refund_cancellation_note'.tr,
-                                                  style: robotoRegular),
-                                              SizedBox(
-                                                  height: Dimensions
-                                                      .PADDING_SIZE_SMALL),
-                                              Text(
-                                                _order.refundCancellationNote,
-                                                style: robotoRegular.copyWith(
-                                                    fontSize: Dimensions
-                                                        .fontSizeDefault,
-                                                    color: Theme.of(context)
-                                                        .disabledColor),
-                                              ),
-                                              SizedBox(
-                                                  height: Dimensions
-                                                      .PADDING_SIZE_LARGE),
-                                            ])
-                                      : SizedBox(),
+                    Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Text(
+                        _parcel ? _order.parcelCategory.name : _order.store.name, maxLines: 1, overflow: TextOverflow.ellipsis,
+                        style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall),
+                      ),
+                      Text(
+                        _parcel ? _order.parcelCategory.description : _order.store.address, maxLines: 1, overflow: TextOverflow.ellipsis,
+                        style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).disabledColor),
+                      ),
+                    ])),
 
-                                  Divider(
-                                      height: Dimensions.PADDING_SIZE_LARGE),
-                                  SizedBox(
-                                      height: Dimensions.PADDING_SIZE_SMALL),
+                    (!_parcel && _order.orderType == 'take_away' && (_order.orderStatus == 'pending' || _order.orderStatus == 'accepted'
+                        || _order.orderStatus == 'confirmed' || _order.orderStatus == 'processing' || _order.orderStatus == 'handover'
+                        || _order.orderStatus == 'picked_up')) ? TextButton.icon(onPressed: () async {
+                          if(!_parcel) {
+                            String url ='https://www.google.com/maps/dir/?api=1&destination=${_order.store.latitude}'
+                                ',${_order.store.longitude}&mode=d';
+                            if (await canLaunchUrlString(url)) {
+                              await launchUrlString(url);
+                            }else {
+                              showCustomSnackBar('unable_to_launch_google_map'.tr);
+                            }
+                          }
+                          }, icon: Icon(Icons.directions), label: Text('direction'.tr),
 
-                                  _parcel
-                                      ? CardWidget(
-                                          child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.stretch,
-                                              children: [
-                                              DetailsWidget(
-                                                  title: 'sender_details'.tr,
-                                                  address:
-                                                      _order.deliveryAddress),
-                                              SizedBox(
-                                                  height: Dimensions
-                                                      .PADDING_SIZE_LARGE),
-                                              DetailsWidget(
-                                                  title: 'receiver_details'.tr,
-                                                  address:
-                                                      _order.receiverDetails),
-                                            ]))
-                                      : ListView.builder(
-                                          shrinkWrap: true,
-                                          physics:
-                                              NeverScrollableScrollPhysics(),
-                                          itemCount: orderController
-                                              .orderDetails.length,
-                                          padding: EdgeInsets.zero,
-                                          itemBuilder: (context, index) {
-                                            return OrderItemWidget(
-                                                order: _order,
-                                                orderDetails: orderController
-                                                    .orderDetails[index]);
-                                          },
-                                        ),
-                                  SizedBox(
-                                      height: _parcel
-                                          ? Dimensions.PADDING_SIZE_LARGE
-                                          : 0),
+                    ) : SizedBox(),
 
-                                  Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        (Get.find<SplashController>()
-                                                    .getModule(
-                                                        _order.moduleType)
-                                                    .orderAttachment &&
-                                                _order.orderAttachment !=
-                                                    null &&
-                                                _order
-                                                    .orderAttachment.isNotEmpty)
-                                            ? Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                    Text('prescription'.tr,
-                                                        style: robotoRegular),
-                                                    SizedBox(
-                                                        height: Dimensions
-                                                            .PADDING_SIZE_SMALL),
-                                                    InkWell(
-                                                      onTap: () => openDialog(
-                                                          context,
-                                                          '${Get.find<SplashController>().configModel.baseUrls.orderAttachmentUrl}/${_order.orderAttachment}'),
-                                                      child: Center(
-                                                          child: ClipRRect(
-                                                        borderRadius: BorderRadius
-                                                            .circular(Dimensions
-                                                                .RADIUS_SMALL),
-                                                        child: CustomImage(
-                                                          image:
-                                                              '${Get.find<SplashController>().configModel.baseUrls.orderAttachmentUrl}/${_order.orderAttachment}',
-                                                          width: 100,
-                                                          height: 100,
-                                                        ),
-                                                      )),
-                                                    ),
-                                                    SizedBox(
-                                                        height: Dimensions
-                                                            .PADDING_SIZE_LARGE),
-                                                  ])
-                                            : SizedBox(),
-                                        SizedBox(
-                                            width: (Get.find<SplashController>()
-                                                        .getModule(
-                                                            _order.moduleType)
-                                                        .orderAttachment &&
-                                                    _order.orderAttachment !=
-                                                        null &&
-                                                    _order.orderAttachment
-                                                        .isNotEmpty)
-                                                ? Dimensions.PADDING_SIZE_SMALL
-                                                : 0),
-                                        (_order.orderNote != null &&
-                                                _order.orderNote.isNotEmpty)
-                                            ? Expanded(
-                                                child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text('additional_note'.tr,
-                                                          style: robotoRegular),
-                                                      SizedBox(
-                                                          height: Dimensions
-                                                              .PADDING_SIZE_SMALL),
-                                                      Container(
-                                                        width: Dimensions
-                                                            .WEB_MAX_WIDTH,
-                                                        padding: EdgeInsets.all(
-                                                            Dimensions
-                                                                .PADDING_SIZE_SMALL),
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          borderRadius: BorderRadius
-                                                              .circular(Dimensions
-                                                                  .RADIUS_SMALL),
-                                                          border: Border.all(
-                                                              width: 1,
-                                                              color: Theme.of(
-                                                                      context)
-                                                                  .disabledColor),
-                                                        ),
-                                                        child: Text(
-                                                          _order.orderNote,
-                                                          style: robotoRegular.copyWith(
-                                                              fontSize: Dimensions
-                                                                  .fontSizeSmall,
-                                                              color: Theme.of(
-                                                                      context)
-                                                                  .disabledColor),
-                                                        ),
-                                                      ),
-                                                      SizedBox(
-                                                          height: Dimensions
-                                                              .PADDING_SIZE_LARGE),
-                                                    ]),
-                                              )
-                                            : SizedBox(),
-                                      ]),
+                    (!_parcel && _order.orderStatus != 'delivered' && _order.orderStatus != 'failed' && _order.orderStatus != 'canceled' && _order.orderStatus != 'refunded') ? TextButton.icon(
+                      onPressed: () async {
+                        await Get.toNamed(RouteHelper.getChatRoute(
+                          notificationBody: NotificationBody(orderId: _order.id, restaurantId: _order.store.vendorId),
+                          user: User(id: _order.store.vendorId, fName: _order.store.name, lName: '', image: _order.store.logo),
+                        ));
+                      },
+                      icon: Icon(Icons.chat_bubble_outline, color: Theme.of(context).primaryColor, size: 20),
+                      label: Text(
+                        'chat'.tr,
+                        style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).primaryColor),
+                      ),
+                    ) : SizedBox(),
 
-                                  SizedBox(
-                                      height: _parcel
-                                          ? 0
-                                          : Dimensions.PADDING_SIZE_LARGE),
+                    // !_parcel ? TextButton.icon(
+                    //   onPressed: () async {
+                    //     _timer?.cancel();
+                    //     await Get.toNamed(RouteHelper.getChatRoute(orderModel: widget.orderModel, isStore: true));
+                    //     _startApiCall();
+                    //   },
+                    //   icon: Icon(Icons.message, color: Theme.of(context).primaryColor, size: 20),
+                    //   label: Text(
+                    //     'message'.tr,
+                    //     style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).primaryColor),
+                    //   ),
+                    // ) : SizedBox(),
+
+                  ]),
+                ])),
+                SizedBox(height: _parcel ? 0 : Dimensions.PADDING_SIZE_LARGE),
 
                 // Total
                 _parcel ? SizedBox() : Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
