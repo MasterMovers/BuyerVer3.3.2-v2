@@ -195,6 +195,82 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                 ),
                 Divider(height: Dimensions.PADDING_SIZE_LARGE),
                 SizedBox(height: Dimensions.PADDING_SIZE_SMALL),
+                
+                CardWidget(showCard: _parcel, child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text(_parcel ? 'parcel_category'.tr : Get.find<SplashController>().getModule(_order.moduleType).showRestaurantText
+                      ? 'restaurant_details'.tr : 'store_details'.tr, style: robotoRegular),
+                  SizedBox(height: Dimensions.PADDING_SIZE_EXTRA_SMALL),
+                  (_parcel && _order.parcelCategory == null) ? Text(
+                    'no_parcel_category_data_found'.tr, style: robotoMedium
+                  ) : (!_parcel && _order.store == null) ? Center(child: Padding(padding: const EdgeInsets.symmetric(vertical: Dimensions.PADDING_SIZE_SMALL),
+                    child: Text('no_restaurant_data_found'.tr, maxLines: 1, overflow: TextOverflow.ellipsis,
+                        style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall)),
+                  )) : Row(children: [
+
+                    ClipOval(child: CustomImage(
+                      image: _parcel ? '${Get.find<SplashController>().configModel.baseUrls.parcelCategoryImageUrl}/${_order.parcelCategory.image}'
+                          : '${Get.find<SplashController>().configModel.baseUrls.storeImageUrl}/${_order.store.logo}',
+                      height: 35, width: 35, fit: BoxFit.cover,
+                    )),
+                    SizedBox(width: Dimensions.PADDING_SIZE_SMALL),
+
+                    Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Text(
+                        _parcel ? _order.parcelCategory.name : _order.store.name, maxLines: 1, overflow: TextOverflow.ellipsis,
+                        style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall),
+                      ),
+                      Text(
+                        _parcel ? _order.parcelCategory.description : _order.store.address, maxLines: 1, overflow: TextOverflow.ellipsis,
+                        style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).disabledColor),
+                      ),
+                    ])),
+
+                    (!_parcel && _order.orderType == 'take_away' && (_order.orderStatus == 'pending' || _order.orderStatus == 'accepted'
+                        || _order.orderStatus == 'confirmed' || _order.orderStatus == 'processing' || _order.orderStatus == 'handover'
+                        || _order.orderStatus == 'picked_up')) ? TextButton.icon(onPressed: () async {
+                          if(!_parcel) {
+                            String url ='https://www.google.com/maps/dir/?api=1&destination=${_order.store.latitude}'
+                                ',${_order.store.longitude}&mode=d';
+                            if (await canLaunchUrlString(url)) {
+                              await launchUrlString(url);
+                            }else {
+                              showCustomSnackBar('unable_to_launch_google_map'.tr);
+                            }
+                          }
+                          }, icon: Icon(Icons.directions), label: Text('direction'.tr),
+
+                    ) : SizedBox(),
+
+                    (!_parcel && _order.orderStatus != 'delivered' && _order.orderStatus != 'failed' && _order.orderStatus != 'canceled' && _order.orderStatus != 'refunded') ? TextButton.icon(
+                      onPressed: () async {
+                        await Get.toNamed(RouteHelper.getChatRoute(
+                          notificationBody: NotificationBody(orderId: _order.id, restaurantId: _order.store.vendorId),
+                          user: User(id: _order.store.vendorId, fName: _order.store.name, lName: '', image: _order.store.logo),
+                        ));
+                      },
+                      icon: Icon(Icons.chat_bubble_outline, color: Theme.of(context).primaryColor, size: 20),
+                      label: Text(
+                        'chat'.tr,
+                        style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).primaryColor),
+                      ),
+                    ) : SizedBox(),
+
+                    // !_parcel ? TextButton.icon(
+                    //   onPressed: () async {
+                    //     _timer?.cancel();
+                    //     await Get.toNamed(RouteHelper.getChatRoute(orderModel: widget.orderModel, isStore: true));
+                    //     _startApiCall();
+                    //   },
+                    //   icon: Icon(Icons.message, color: Theme.of(context).primaryColor, size: 20),
+                    //   label: Text(
+                    //     'message'.tr,
+                    //     style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).primaryColor),
+                    //   ),
+                    // ) : SizedBox(),
+
+                  ]),
+                  
+                  SizedBox(height: Dimensions.PADDING_SIZE_SMALL),
 
                 _parcel ? CardWidget(child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
                   DetailsWidget(title: 'sender_details'.tr, address: _order.deliveryAddress),
