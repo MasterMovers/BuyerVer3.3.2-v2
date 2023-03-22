@@ -196,62 +196,6 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                 Divider(height: Dimensions.PADDING_SIZE_LARGE),
                 SizedBox(height: Dimensions.PADDING_SIZE_SMALL),
 
-                _parcel ? CardWidget(child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-                  DetailsWidget(title: 'sender_details'.tr, address: _order.deliveryAddress),
-                  SizedBox(height: Dimensions.PADDING_SIZE_LARGE),
-                  DetailsWidget(title: 'receiver_details'.tr, address: _order.receiverDetails),
-                ])) : ListView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: orderController.orderDetails.length,
-                  padding: EdgeInsets.zero,
-                  itemBuilder: (context, index) {
-                    return OrderItemWidget(order: _order, orderDetails: orderController.orderDetails[index]);
-                  },
-                ),
-                SizedBox(height: _parcel ? Dimensions.PADDING_SIZE_LARGE : 0),
-
-                Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  (Get.find<SplashController>().getModule(_order.moduleType).orderAttachment && _order.orderAttachment != null
-                  && _order.orderAttachment.isNotEmpty) ? Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Text('prescription'.tr, style: robotoRegular),
-                    SizedBox(height: Dimensions.PADDING_SIZE_SMALL),
-                    InkWell(
-                      onTap: () => openDialog(context, '${Get.find<SplashController>().configModel.baseUrls.orderAttachmentUrl}/${_order.orderAttachment}'),
-                      child: Center(child: ClipRRect(
-                        borderRadius: BorderRadius.circular(Dimensions.RADIUS_SMALL),
-                        child: CustomImage(
-                          image: '${Get.find<SplashController>().configModel.baseUrls.orderAttachmentUrl}/${_order.orderAttachment}',
-                          width: 100, height: 100,
-                        ),
-                      )),
-                    ),
-                    SizedBox(height: Dimensions.PADDING_SIZE_LARGE),
-                  ]) : SizedBox(),
-                  SizedBox(width: (Get.find<SplashController>().getModule(_order.moduleType).orderAttachment
-                      && _order.orderAttachment != null && _order.orderAttachment.isNotEmpty) ? Dimensions.PADDING_SIZE_SMALL : 0),
-
-                  (_order.orderNote  != null && _order.orderNote.isNotEmpty) ? Expanded(
-                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Text('additional_note'.tr, style: robotoRegular),
-                      SizedBox(height: Dimensions.PADDING_SIZE_SMALL),
-                      Container(
-                        width: Dimensions.WEB_MAX_WIDTH,
-                        padding: EdgeInsets.all(Dimensions.PADDING_SIZE_SMALL),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(Dimensions.RADIUS_SMALL),
-                          border: Border.all(width: 1, color: Theme.of(context).disabledColor),
-                        ),
-                        child: Text(
-                          _order.orderNote,
-                          style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).disabledColor),
-                        ),
-                      ),
-                      SizedBox(height: Dimensions.PADDING_SIZE_LARGE),
-                    ]),
-                  ) : SizedBox(),
-                ]),
-
                 CardWidget(showCard: _parcel, child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Text(_parcel ? 'parcel_category'.tr : Get.find<SplashController>().getModule(_order.moduleType).showRestaurantText
                       ? 'restaurant_details'.tr : 'store_details'.tr, style: robotoRegular),
@@ -326,6 +270,65 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
 
                   ]),
                 ])),
+                
+                SizedBox(height: Dimensions.PADDING_SIZE_SMALL),
+
+                _parcel ? CardWidget(child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+                  DetailsWidget(title: 'sender_details'.tr, address: _order.deliveryAddress),
+                  SizedBox(height: Dimensions.PADDING_SIZE_LARGE),
+                  DetailsWidget(title: 'receiver_details'.tr, address: _order.receiverDetails),
+                ])) : ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: orderController.orderDetails.length,
+                  padding: EdgeInsets.zero,
+                  itemBuilder: (context, index) {
+                    return OrderItemWidget(order: _order, orderDetails: orderController.orderDetails[index]);
+                  },
+                ),
+                SizedBox(height: _parcel ? Dimensions.PADDING_SIZE_LARGE : 0),
+
+                Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  (Get.find<SplashController>().getModule(_order.moduleType).orderAttachment && _order.orderAttachment != null
+                  && _order.orderAttachment.isNotEmpty) ? Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Text('prescription'.tr, style: robotoRegular),
+                    SizedBox(height: Dimensions.PADDING_SIZE_SMALL),
+                    InkWell(
+                      onTap: () => openDialog(context, '${Get.find<SplashController>().configModel.baseUrls.orderAttachmentUrl}/${_order.orderAttachment}'),
+                      child: Center(child: ClipRRect(
+                        borderRadius: BorderRadius.circular(Dimensions.RADIUS_SMALL),
+                        child: CustomImage(
+                          image: '${Get.find<SplashController>().configModel.baseUrls.orderAttachmentUrl}/${_order.orderAttachment}',
+                          width: 100, height: 100,
+                        ),
+                      )),
+                    ),
+                    SizedBox(height: Dimensions.PADDING_SIZE_LARGE),
+                  ]) : SizedBox(),
+                  SizedBox(width: (Get.find<SplashController>().getModule(_order.moduleType).orderAttachment
+                      && _order.orderAttachment != null && _order.orderAttachment.isNotEmpty) ? Dimensions.PADDING_SIZE_SMALL : 0),
+
+                  (_order.orderNote  != null && _order.orderNote.isNotEmpty) ? Expanded(
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Text('additional_note'.tr, style: robotoRegular),
+                      SizedBox(height: Dimensions.PADDING_SIZE_SMALL),
+                      Container(
+                        width: Dimensions.WEB_MAX_WIDTH,
+                        padding: EdgeInsets.all(Dimensions.PADDING_SIZE_SMALL),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(Dimensions.RADIUS_SMALL),
+                          border: Border.all(width: 1, color: Theme.of(context).disabledColor),
+                        ),
+                        child: Text(
+                          _order.orderNote,
+                          style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).disabledColor),
+                        ),
+                      ),
+                      SizedBox(height: Dimensions.PADDING_SIZE_LARGE),
+                    ]),
+                  ) : SizedBox(),
+                ]),
+
                 SizedBox(height: _parcel ? 0 : Dimensions.PADDING_SIZE_LARGE),
 
                 // Total
