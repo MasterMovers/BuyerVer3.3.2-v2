@@ -61,7 +61,8 @@ class MenuButton extends StatelessWidget {
             boxShadow: [BoxShadow(color: Colors.grey[Get.isDarkMode ? 800 : 200], spreadRadius: 1, blurRadius: 5)],
           ),
           alignment: Alignment.center,
-          child: isProfile ? ProfileImageWidget(size: _size) : Image.asset(menu.icon, width: _size, height: _size, color: Colors.white),
+          //child: isProfile ? ProfileImageWidget(size: _size) : Image.asset(menu.icon, width: _size, height: _size, color: Colors.white),
+          child: isProfile ? ProfileImageWidget(size: _size) : Image.asset(menu.icon, width: _size, height: _size,),
         ),
         SizedBox(height: Dimensions.PADDING_SIZE_EXTRA_SMALL),
 
