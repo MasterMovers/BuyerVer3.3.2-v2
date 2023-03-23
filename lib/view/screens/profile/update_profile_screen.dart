@@ -139,6 +139,17 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     inputType: TextInputType.phone,
                     isEnabled: false,
                   ),
+                  
+                  _isLoggedIn ? ProfileButton(
+                  icon: Icons.delete, title: 'delete_account'.tr,
+                  onTap: () {
+                    Get.dialog(ConfirmationDialog(icon: Images.support,
+                      title: 'are_you_sure_to_delete_account'.tr,
+                      description: 'it_will_remove_your_all_information'.tr, isLogOut: true,
+                      onYesPressed: () => userController.removeUser(),
+                    ), useSafeArea: false);
+                  },
+                ) : SizedBox(),
 
                   //
                   ResponsiveHelper.isDesktop(context) ? Padding(
