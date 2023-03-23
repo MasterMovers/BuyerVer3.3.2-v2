@@ -21,6 +21,7 @@ import 'package:sixam_mart/view/screens/item/widget/details_app_bar.dart';
 import 'package:sixam_mart/view/screens/item/widget/details_web_view.dart';
 import 'package:sixam_mart/view/screens/item/widget/item_image_view.dart';
 import 'package:sixam_mart/view/screens/item/widget/item_title_view.dart';
+import 'package:readmore/readmore.dart';
 
 class ItemDetailsScreen extends StatefulWidget {
   final Item item;
@@ -227,7 +228,15 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen> {
                     children: [
                       Text('description'.tr, style: robotoMedium),
                       SizedBox(height: Dimensions.PADDING_SIZE_EXTRA_SMALL),
-                      Text(itemController.item.description, style: robotoRegular),
+                      //Text(itemController.item.description, style: robotoRegular),
+                      ReadMoreText(itemController.item.description,
+                                   trimLines:2,
+                                   colorClickableText:Theme.of(context).primaryColor,
+                                   trimMode:TrimMode.Line,
+                                   trimCollapsedText: 'Read more',
+                                   trimExpandedText: 'less',
+                                   style: robotoRegular,
+                                  ),
                       SizedBox(height: Dimensions.PADDING_SIZE_LARGE),
                     ],
                   ) : SizedBox(),
