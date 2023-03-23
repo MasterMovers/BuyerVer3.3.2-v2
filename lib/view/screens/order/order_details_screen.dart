@@ -361,21 +361,6 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                   SizedBox(height: Get.find<SplashController>().getModule(_order.moduleType).addOn ? 10 : 0),
 
                   Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                    Text('discount'.tr, style: robotoRegular),
-                    Text('(-) ${PriceConverter.convertPrice(_discount)}', style: robotoRegular),
-                  ]),
-                  SizedBox(height: 10),
-
-                  _couponDiscount > 0 ? Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                    Text('coupon_discount'.tr, style: robotoRegular),
-                    Text(
-                      '(-) ${PriceConverter.convertPrice(_couponDiscount)}',
-                      style: robotoRegular,
-                    ),
-                  ]) : SizedBox(),
-                  SizedBox(height: _couponDiscount > 0 ? 10 : 0),
-
-                  Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                     Text('vat_tax'.tr, style: robotoRegular),
                     Text('(+) ${PriceConverter.convertPrice(_tax)}', style: robotoRegular),
                   ]),
@@ -397,6 +382,21 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                     ) : Text('free'.tr, style: robotoRegular.copyWith(color: Theme.of(context).primaryColor)),
                   ]),
                 ]),
+                
+                Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                    Text('discount'.tr, style: robotoRegular),
+                    Text('(-) ${PriceConverter.convertPrice(_discount)}', style: robotoRegular),
+                  ]),
+                  SizedBox(height: 10),
+
+                  _couponDiscount > 0 ? Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                    Text('coupon_discount'.tr, style: robotoRegular),
+                    Text(
+                      '(-) ${PriceConverter.convertPrice(_couponDiscount)}',
+                      style: robotoRegular,
+                    ),
+                  ]) : SizedBox(),
+                  SizedBox(height: _couponDiscount > 0 ? 10 : 0),
 
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: Dimensions.PADDING_SIZE_SMALL),
