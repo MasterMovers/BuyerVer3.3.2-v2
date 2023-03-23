@@ -49,6 +49,8 @@ dependencies:
   share_plus: ^4.0.10
   fwfh_text_style: ^2.22.8+1
   expandable_bottom_sheet: ^1.1.1+1
+  
+   readmore: ^2.2.0
 
 dev_dependencies:
   flutter_test:
