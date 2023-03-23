@@ -5,7 +5,9 @@ import 'package:sixam_mart/data/model/response/response_model.dart';
 import 'package:sixam_mart/data/model/response/userinfo_model.dart';
 import 'package:sixam_mart/helper/responsive_helper.dart';
 import 'package:sixam_mart/util/dimensions.dart';
+import 'package:sixam_mart/util/images.dart';
 import 'package:sixam_mart/util/styles.dart';
+import 'package:sixam_mart/view/base/confirmation_dialog.dart';
 import 'package:sixam_mart/view/base/custom_button.dart';
 import 'package:sixam_mart/view/base/custom_snackbar.dart';
 import 'package:sixam_mart/view/base/footer_view.dart';
@@ -17,6 +19,7 @@ import 'package:sixam_mart/view/base/web_menu_bar.dart';
 import 'package:sixam_mart/view/screens/profile/widget/profile_bg_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sixam_mart/view/screens/profile/widget/profile_button.dart';
 
 class UpdateProfileScreen extends StatefulWidget {
   @override
