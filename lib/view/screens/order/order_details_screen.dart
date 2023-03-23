@@ -475,7 +475,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
             order.orderStatus == 'pending' ? Expanded(child: Padding(
               padding: ResponsiveHelper.isDesktop(context) ? EdgeInsets.zero : EdgeInsets.all(Dimensions.PADDING_SIZE_SMALL),
               child: TextButton(
-                style: TextButton.styleFrom(minimumSize: Size(1, 50), shape: RoundedRectangleBorder(
+                style: TextButton.styleFrom(backgroundColor: Colors.red, minimumSize: Size(1, 50), shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(Dimensions.RADIUS_SMALL), side: BorderSide(width: 2, color: Theme.of(context).disabledColor),
                 )),
                 onPressed: () {
