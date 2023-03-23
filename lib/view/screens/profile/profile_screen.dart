@@ -119,17 +119,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Get.toNamed(RouteHelper.getUpdateProfileRoute());
                 }),
                 SizedBox(height: _isLoggedIn ? Dimensions.PADDING_SIZE_SMALL : Dimensions.PADDING_SIZE_LARGE),
-
-                _isLoggedIn ? ProfileButton(
-                  icon: Icons.delete, title: 'delete_account'.tr,
-                  onTap: () {
-                    Get.dialog(ConfirmationDialog(icon: Images.support,
-                      title: 'are_you_sure_to_delete_account'.tr,
-                      description: 'it_will_remove_your_all_information'.tr, isLogOut: true,
-                      onYesPressed: () => userController.removeUser(),
-                    ), useSafeArea: false);
-                  },
-                ) : SizedBox(),
+                
                 SizedBox(height: _isLoggedIn ? Dimensions.PADDING_SIZE_LARGE : 0),
 
                 Row(mainAxisAlignment: MainAxisAlignment.center, children: [
